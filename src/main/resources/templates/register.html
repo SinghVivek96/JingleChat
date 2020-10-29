@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="CSS/login.css"> -->
-    <link th:href="@{/CSS/login.css}" rel="stylesheet" />
+    <link th:href="@{/CSS/register.css}" rel="stylesheet" />
     
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -15,34 +15,8 @@
     <title>Jingle Login</title>
 </head>
 <body>
-	<div th:if="${param.error}"></div>
-	<p>Hello my name is</p>
     <div id="logreg-forms">
-		<!--     sdf -->
-        <form class="form-signin" th:action="@{/login}" method="post">
-            <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
-            <div class="social-login">
-                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                <button class="btn google-btn social-btn" type="button" id="googleSignIn"><span><i class="fab fa-google-plus-g"></i><a th:href="@{/oauth2/code/google}"> Sign in with Google+</a></span> </button>
-            </div>
-            <p style="text-align:center"> OR  </p>
-            <input type="text" name="userName" id="userName" class="form-control" placeholder="User Name" required="" autofocus="">
-            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required="">
-            
-            <button class="btn btn-success btn-block" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
-            <a href="#" id="forgot_pswd">Forgot password?</a>
-            <hr>
-            <!-- <p>Don't have an account!</p>  -->
-            <a class="btn btn-primary btn-block" th:href="@{/register}" role="button"><i class="fas fa-user-plus"></i> Sign up New Account</a>
-            </form>
-
-            <form action="/reset/password/" class="form-reset">
-                <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-                <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
-                <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
-            </form>
-            
-            <!-- <form th:action="register" class="form-signup" method="post">
+        	<form class="form-signup" th:action="@{/process_register}" method="post" th:object="${user}">         
                 <div class="social-login">
                     <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
                 </div>
@@ -53,19 +27,39 @@
                 <p style="text-align:center">OR</p>
 
                 <input type="text" id="user-name" class="form-control" placeholder="User Name" required=true autofocus="" th:field="*{userName}" minlength="2" maxlength="20">
-                <input type="email" id="user-email" class="form-control" th:field="*{email}" placeholder="Email address" required autofocus="" th:field="*{email}" minlength="2" maxlength="20">
+                <input type="email" id="user-email" class="form-control" placeholder="Email address" required autofocus="" th:field="*{email}" minlength="2" maxlength="20">
                 <input type="text" id="first-name" class="form-control" placeholder="First Name" required autofocus="" th:field="*{firstName}" minlength="2" maxlength="20">
                 <input type="text" id="last-name" class="form-control" placeholder="Last Name" required autofocus="" th:field="*{lastName}" minlength="2" maxlength="20">
                 <input type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus="" th:field="*{password}" minlength="6" maxlength="10">
                 <input type="password" id="user-repeatpass" class="form-control" placeholder="Repeat Password" required autofocus="">
-                <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
-                <a href="#" id="cancel_signup"><i class="fas fa-angle-left"></i> Back</a>
-            </form> -->
+                <button class="btn btn-primary btn-block" type="submit" id="sign_up"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <a th:href="@{/login}" id="cancel_signup"><i class="fas fa-angle-left"></i> Sign-In</a>
+            </form>
             <br>
             
     </div>
+<!--     <div class="modal" id="myModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<button type="button" class="btn btn-primary" id="modaltoggle" data-toggle="modal" data-target="#myModal" hidden="true"> -->
     <p style="text-align:center">
-        <a href="http://bit.ly/2RjWFMfunction toggleResetPswd(e){
+       <!--  <a href="http://bit.ly/2RjWFMfunction toggleResetPswd(e){
     e.preventDefault();
     $('#logreg-forms .form-signin').toggle() // display:block or none
     $('#logreg-forms .form-reset').toggle() // display:block or none
@@ -84,10 +78,11 @@ $(()=>{
     $('#logreg-forms #btn-signup').click(toggleSignUp);
     $('#logreg-forms #cancel_signup').click(toggleSignUp);
 })g" target="_blank" style="color:black"></a>
-    </p>
+    </p> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" th:src="@{/JS/login.js}"></script>
+    <!-- <script src="../static/JS/login.js"></script> -->
+    <script type="text/javascript" th:src="@{/JS/register.js}"></script>
     
     
 </body>

@@ -10,4 +10,4 @@ public class JingleChatApplication {
 		SpringApplication.run(JingleChatApplication.class, args);
 	}
 
-}
+}	
