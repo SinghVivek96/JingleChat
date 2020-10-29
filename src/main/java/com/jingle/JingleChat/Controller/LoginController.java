@@ -43,7 +43,7 @@ public class LoginController {
 //		return modelAndView;	
 //	}	
 //	
-	@RequestMapping(value = {"","/login"})
+	@RequestMapping(value = {"","/","/login"})
 	public String showLoginPage()
 	{	
 		
