@@ -14,18 +14,20 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <title>Jingle Login</title>
 </head>
-<body>
+<body style="background-color:#eee6ff;">
 	<div th:if="${param.error}">
 	<p class="text-danger">Hello my name is</p>
 	</div>
 	
     <div id="logreg-forms">
 		<!--     sdf -->
-        <form class="form-signin" th:action="@{/login}" method="post">
+        <form class="form-signin" th:action="@{/login}" method="post" style="background-color:#eee6ff;">
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
             <div class="social-login">
-                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                <button class="btn google-btn social-btn" type="button" id="googleSignIn"><span><i class="fab fa-google-plus-g"></i><a th:href="@{/oauth2/authorization/google}"> Sign in with Google+</a></span> </button>
+                <a class="btn facebook-btn social-btn" role="button" ><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </a>
+<!--                 <a class="btn google-btn social-btn" th:href="@{/oauth2/authorization/google}" role="button" id="googleSignIn"> Sign in with Google+ </a> -->
+                
+                <a class="btn google-btn social-btn" role="button" id="googleSignIn" th:href="@{/oauth2/authorization/google}"><span><i class="fab fa-google-plus-g"></i>Sign in with Google+</span> </a>
             </div>
             <p style="text-align:center"> OR  </p>
             <input type="text" name="userName" id="userName" class="form-control" placeholder="User Name" required="" autofocus="">

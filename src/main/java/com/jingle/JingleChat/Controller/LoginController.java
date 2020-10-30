@@ -1,7 +1,10 @@
 package com.jingle.JingleChat.Controller;
 
 import java.security.Principal;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jingle.JingleChat.DAO.TopicDAO;
+import com.jingle.JingleChat.Entities.Topics;
+import com.jingle.JingleChat.Entities.TopicsRepository;
 import com.jingle.JingleChat.Entities.User;
 import com.jingle.JingleChat.Entities.UserRepository;
 import com.jingle.JingleChat.Service.LoginService;
@@ -38,6 +45,12 @@ public class LoginController {
 	
 	@Autowired
 	private UserRepository repo;
+	
+	@Autowired
+	private TopicsRepository topicRepo;
+	
+	@Autowired
+	private TopicDAO topicDAORepo;
 	
 //	@RequestMapping(value = {""},method = RequestMethod.GET)
 //	public ModelAndView welcomePage(ModelMap model)
@@ -54,7 +67,6 @@ public class LoginController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if(authentication ==  null || authentication instanceof AnonymousAuthenticationToken)
 		{
-			System.out.println("in null login");
 			return "login";
 		}
 		
@@ -115,8 +127,8 @@ public class LoginController {
 //		return ((OAuth2AuthenticationToken)auth).getPrincipal();
 //	}
 	
-	@RequestMapping("/chat")
-    public ModelAndView index(HttpServletRequest request,@RequestParam(value = "topic") String topic,@AuthenticationPrincipal OAuth2User principal_google) {
+	@RequestMapping("/chat/{topicName}")
+    public ModelAndView index(HttpServletRequest request,@PathVariable(name = "topicName") String topicName,@AuthenticationPrincipal OAuth2User principal_google) {
 		ModelAndView model = new ModelAndView();
 		
 		//Google
@@ -125,7 +137,7 @@ public class LoginController {
 			Map<String, Object> user = Collections.singletonMap("name", principal_google.getAttribute("name"));
 			System.out.println(user.get("name"));
 			model.addObject("userName",user.get("name"));
-			model.addObject("topicName",topic);
+			model.addObject("topicName",topicName);
 			model.setViewName("chatstart");
 			return model;
 		}
@@ -137,19 +149,33 @@ public class LoginController {
 		Principal principal = request.getUserPrincipal();
 		String userName = principal.getName();
 		model.addObject("userName",userName);
-		model.addObject("topicName",topic);
+		model.addObject("topicName",topicName);
         model.setViewName("chatstart");
         return model;
     }
 	
 	@RequestMapping(path = "/welcome")
     public String welcome(HttpServletRequest request,ModelMap model,@AuthenticationPrincipal OAuth2User principal_google) {
+//		List<Topics> allTopics = topicRepo.findAll();
+//		
+//		System.out.println(allTopics);
+		
+		List<String> allpublicTopics = topicDAORepo.fetchPublicTopics();
+		
+		String[] arr = new String[allpublicTopics.size()]; 	
+//		System.out.println("All public topics are "+ allpublicTopics.get(0));
+		
+		for (int i =0; i < allpublicTopics.size(); i++) 
+            arr[i] = allpublicTopics.get(i); 
+		
 		//google login
+		System.out.println("All public topics are "+ arr);
 		if(principal_google != null)
 		{
 			Map<String, Object> user = Collections.singletonMap("name", principal_google.getAttribute("name"));
 			System.out.println(user.get("name"));
 			model.addAttribute("userName",user.get("name"));
+			model.addAttribute("allpublicTopics", arr);
 			return "welcome";
 			
 		}
@@ -159,8 +185,9 @@ public class LoginController {
 		
 		Principal principal = request.getUserPrincipal();
 		String userName = principal.getName();
-		System.out.println("in here welcome	"+userName);
 		model.addAttribute("userName",userName);
+		
+		model.addAttribute("allpublicTopics", arr);
         return "welcome";		
     }
 	

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "users")
+@Table(name = "Users")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class User {
 	private String userName;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "auth_provider")
+	@Column(name = "authProvider")
 	private AuthenticationProvider authProvider;
 	
 	

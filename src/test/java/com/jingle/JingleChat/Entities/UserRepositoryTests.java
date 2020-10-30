@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
 
-@DataJpaTest //TO TEST JPA
-@AutoConfigureTestDatabase(replace = Replace.NONE) //TO TEST WITH REAL DATABASE
-@Rollback(false)
+	@DataJpaTest //TO TEST JPA
+	@AutoConfigureTestDatabase(replace = Replace.NONE) //TO TEST WITH REAL DATABASE
+	@Rollback(false)
 public class UserRepositoryTests {
 	@Autowired
 	private UserRepository repo;
