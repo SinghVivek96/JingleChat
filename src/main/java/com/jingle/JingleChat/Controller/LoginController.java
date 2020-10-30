@@ -1,16 +1,20 @@
 package com.jingle.JingleChat.Controller;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -53,9 +57,15 @@ public class LoginController {
 			System.out.println("in null login");
 			return "login";
 		}
-		//String userName= (String) request.getAttribute("userName");
-		//System.out.println("username fetched is   "+userName);
-		System.out.println("in login welcome");
+		
+//		//String userName= (String) request.getAttribute("userName");
+//		//System.out.println("username fetched is   "+userName);
+//		System.out.println("from authentication "+authentication.getAuthorities());
+//		System.out.println("from authentication "+authentication.getPrincipal());
+//		System.out.println("from authentication "+authentication.getDetails());
+//		System.out.println("from authentication "+authentication.getName());
+//		System.out.println("from authentication "+authentication.getCredentials());
+//		System.out.println("in login welcome");
 		return "redirect:/welcome";
 	}	
 //	
@@ -100,30 +110,56 @@ public class LoginController {
 		return "redirect:/login";
 	}
 	
+//	public OAuth2User getCurrentUser() {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		return ((OAuth2AuthenticationToken)auth).getPrincipal();
+//	}
 	
 	@RequestMapping("/chat")
-    public ModelAndView index(HttpServletRequest request,@RequestParam(value = "topic") String topic) {
+    public ModelAndView index(HttpServletRequest request,@RequestParam(value = "topic") String topic,@AuthenticationPrincipal OAuth2User principal_google) {
 		ModelAndView model = new ModelAndView();
-		Principal principal = request.getUserPrincipal();
-		String userName = principal.getName();
-		if(userName==null)
+		
+		//Google
+		if(principal_google != null)
 		{
-			model.setViewName("login");
+			Map<String, Object> user = Collections.singletonMap("name", principal_google.getAttribute("name"));
+			System.out.println(user.get("name"));
+			model.addObject("userName",user.get("name"));
+			model.addObject("topicName",topic);
+			model.setViewName("chatstart");
 			return model;
 		}
+		
+		
+		//local
+		
+		
+		Principal principal = request.getUserPrincipal();
+		String userName = principal.getName();
 		model.addObject("userName",userName);
 		model.addObject("topicName",topic);
         model.setViewName("chatstart");
-//        System.out.println(username);
-        System.out.println(topic);
         return model;
     }
 	
 	@RequestMapping(path = "/welcome")
-    public String welcome(HttpServletRequest request,ModelMap model) {
+    public String welcome(HttpServletRequest request,ModelMap model,@AuthenticationPrincipal OAuth2User principal_google) {
+		//google login
+		if(principal_google != null)
+		{
+			Map<String, Object> user = Collections.singletonMap("name", principal_google.getAttribute("name"));
+			System.out.println(user.get("name"));
+			model.addAttribute("userName",user.get("name"));
+			return "welcome";
+			
+		}
+		
+		System.out.println("sdafghjhgfdf");
+		//local login
+		
 		Principal principal = request.getUserPrincipal();
 		String userName = principal.getName();
-		System.out.println("in here welcome");
+		System.out.println("in here welcome	"+userName);
 		model.addAttribute("userName",userName);
         return "welcome";		
     }

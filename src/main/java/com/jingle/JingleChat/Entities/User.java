@@ -2,6 +2,8 @@ package com.jingle.JingleChat.Entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +23,10 @@ public class User {
 	private String lastName;
 	@Column(nullable = false,unique = true,length = 30)
 	private String userName;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "auth_provider")
+	private AuthenticationProvider authProvider;
 	
 	
 	
@@ -72,5 +78,10 @@ public class User {
 		this.userName = userName;
 	}
 	
-	
+	public AuthenticationProvider getAuthProvider() {
+		return authProvider;
+	}
+	public void setAuthProvider(AuthenticationProvider authProvider) {
+		this.authProvider = authProvider;
+	}
 }

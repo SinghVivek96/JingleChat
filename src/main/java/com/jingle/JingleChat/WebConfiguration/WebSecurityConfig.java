@@ -20,14 +20,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.jingle.JingleChat.Service.CustomOAuth2UserService;
 import com.jingle.JingleChat.Service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
 	private DataSource dataSource;
+	
+
+	@Autowired
+	private CustomOAuth2UserService oAuth2UserService;
 	
 	@Bean
 	public UserDetailsService userDetailsService()
@@ -69,15 +74,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
+			.antMatchers("/oauth2/**").permitAll()
 			.antMatchers("/welcome").authenticated()
 			.anyRequest().permitAll()
 			.and()
+			
 			.formLogin()
 				.loginPage("/login")
 				.usernameParameter("userName") //set it and password to according to form name
 				.defaultSuccessUrl("/welcome")
 				.permitAll()
 			.and()
+			.oauth2Login()
+				.loginPage("/login")
+				.userInfoEndpoint().userService(oAuth2UserService)
+				.and()
+			.and() 
 			.logout()
 		        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		        .logoutSuccessUrl("/login")
@@ -87,6 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .maxSessionsPreventsLogin(true);	
 
 	}
+	
 	
 	
 }

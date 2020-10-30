@@ -15,15 +15,17 @@
     <title>Jingle Login</title>
 </head>
 <body>
-	<div th:if="${param.error}"></div>
-	<p>Hello my name is</p>
+	<div th:if="${param.error}">
+	<p class="text-danger">Hello my name is</p>
+	</div>
+	
     <div id="logreg-forms">
 		<!--     sdf -->
         <form class="form-signin" th:action="@{/login}" method="post">
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
             <div class="social-login">
                 <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                <button class="btn google-btn social-btn" type="button" id="googleSignIn"><span><i class="fab fa-google-plus-g"></i><a th:href="@{/oauth2/code/google}"> Sign in with Google+</a></span> </button>
+                <button class="btn google-btn social-btn" type="button" id="googleSignIn"><span><i class="fab fa-google-plus-g"></i><a th:href="@{/oauth2/authorization/google}"> Sign in with Google+</a></span> </button>
             </div>
             <p style="text-align:center"> OR  </p>
             <input type="text" name="userName" id="userName" class="form-control" placeholder="User Name" required="" autofocus="">
